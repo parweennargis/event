@@ -26,6 +26,10 @@ module.exports = {
             checkRegisterBody(role_type, reqBody);
 
             const user = await accountService.register(body);
+            if (role_type === 'ATTENDEE') {
+                const loggedIn = await accountService.login({ email: reqBody.email, password: reqBody.password });
+                user.token = loggedIn.token;
+            }
             return res.json({ data: user });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
