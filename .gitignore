@@ -1,0 +1,16 @@
+node_modules
+
+# package lock
+package-lock.json
+.idea/.gitignore
+.idea/events-api.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.vscode/launch.json
+.env
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
