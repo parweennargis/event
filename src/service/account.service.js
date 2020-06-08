@@ -18,11 +18,15 @@ module.exports = {
         if (role_type === 'JOBSEEKER' && (_.isNil(total_experience) || _.isNil(occupation) || _.isNil(occupation_looking_for))) throw new CustomError(404, 'Required Properties Missing');
 
         // create hash password
-        data.password = User.HashPassword(password); 
+        data.password = User.HashPassword(password);
         let user = await userRepository.create(data);
         user = user.toObject();
         // delete password from user object to send the object in response.
         delete user.password;
+
+        // send email to user
+        module.exports.sendEmail(user.email, 'Registration')
+
         return user;
     },
     login: async (data) => {
@@ -38,7 +42,7 @@ module.exports = {
         const data = await userRepository.findOne({ email }, 'email');
         return _.isEmpty(data);
     },
-    sendMsg: async (data) => {
+    sendEmail: async (sendToEmailId, subject) => {
         let transporter = nodemailer.createTransport({
             sendmail: true,
             newline: 'windows',
@@ -46,23 +50,21 @@ module.exports = {
         });
 
         let message = {
-            from: 'Nargis <nargislife@gmail.com>',
+            from: 'Naveen <nav@thetruckingnetwork.ca>',
 
             // Comma separated list of recipients
-            to: 'Andris Reinman <8minq75v@classesmail.com>',
+            to: sendToEmailId,
 
             // Subject of the message
-            subject: 'Register Form',
+            subject: subject,
 
             // HTML body
             html:
-                '<p><b>Hello</b> to myself <img src="cid:note@example.com"/></p>' +
-                '<p>Here\'s a nyan cat for you as an embedded attachment:<br/><img src="cid:nyan@example.com"/></p>',
+                '<p><b>Hello</b> </p>' +
+                '<p>Register Email Template</p>',
         };
 
-        let info = await transporter.sendMail(message);
-        console.log(info);
-        console.log('Message sent successfully as %s', info);
+        await transporter.sendMail(message);
     },
     forgotPassword: async (email) => {
         const user = await userRepository.findOne({ email });
