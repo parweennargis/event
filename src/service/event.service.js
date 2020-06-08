@@ -70,7 +70,7 @@ module.exports = {
                 const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
                 item.images = await Promise.all(promises);
             }
-            const noOfPages = Math.ceil(count / 7);
+            const noOfPages = Math.ceil(count / limit);
             return { count, noOfPages, items };
         } catch (error) {
             throw new CustomError(400, error.message);
@@ -106,7 +106,7 @@ module.exports = {
             for (const item of items) {
                 if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
             }
-            const noOfPages = Math.ceil(count / 7);
+            const noOfPages = Math.ceil(count / limit);
             return { count, noOfPages, items };
         } catch (error) {
             throw new CustomError(400, error.message);
