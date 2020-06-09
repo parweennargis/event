@@ -69,6 +69,7 @@ module.exports = {
             for (const item of items) {
                 const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
                 item.images = await Promise.all(promises);
+                if(item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
             }
             const noOfPages = Math.ceil(count / limit);
             return { count, noOfPages, items };
