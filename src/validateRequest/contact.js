@@ -13,5 +13,15 @@ module.exports = {
             },
             required: ['name', 'email', 'phone_no', 'subject', 'message']
         });
+    },
+
+    'subscribeNewsletter': (body) => {
+        validate(body, {
+            type: 'object',
+            properties: {
+                email: { type: 'string', format: 'email' }
+            },
+            required: ['email']
+        });
     }
 }

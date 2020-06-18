@@ -18,6 +18,7 @@ const ignoreRoutes = [
   'GET:/offline-events',
   'GET:/offline-categories/:offlineCategoryId',
   'POST:/contact',
+  'POST:/subscribe'
 ];
 
 const createHash = (str) => {
