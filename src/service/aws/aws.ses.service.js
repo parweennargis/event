@@ -1,4 +1,7 @@
+const fs = require('fs');
+const path = require('path');
 const AWS = require('aws-sdk');
+const Handlebars = require('handlebars');
 const config = require('../../../config');
 
 const ses = new AWS.SES({
@@ -9,22 +12,19 @@ const ses = new AWS.SES({
 });
 
 // Create the promise and SES service object
-const sendMail = ({ toAddresses, subjectBody, bodyData = '', bodyType = 'Html', ccAddresses = [] }) => {
+const sendMail = async (emailTemplate, { toAddresses, subject, data = {}, bodyType = 'Html', ccAddresses = [] }) => {
+    if (!emailTemplate || !toAddresses.length) {
+        console.log('[Email]: Required params not passed');
+        return;
+    }
     //Check bodyType it should be Html or Text
     //Check toAddresses it should have atleast one length
     // Check subjectBody
+    const source = fs.readFileSync(path.join(__dirname, '../../../views/email_templates/' + emailTemplate), 'utf8');
+
+    const template = Handlebars.compile(source);
 
     // Create sendEmail params 
-    const MessageBody = {
-        Html: {
-            Charset: "UTF-8",
-            Data: bodyData
-        },
-        Text: {
-            Charset: "UTF-8",
-            Data: bodyData
-        }
-    };
     const params = {
         Destination: { /* required */
             CcAddresses: ccAddresses,
@@ -32,31 +32,29 @@ const sendMail = ({ toAddresses, subjectBody, bodyData = '', bodyType = 'Html', 
         },
         Message: { /* required */
             Body: { /* required */
+                Html: {
+                    Charset: "UTF-8",
+                    Data: template(data)
+                }
             },
             Subject: {
                 Charset: 'UTF-8',
-                Data: subjectBody
+                Data: subject
             }
         },
-        Source: 'nav@thetruckingnetwork.ca', /* required */
+        Source: 'info@neuproelectro.com', /* required */
         // ReplyToAddresses: [
         //    'EMAIL_ADDRESS',
         //   /* more items */
         // ],
     };
-
-    params.Message.Body[bodyType] = MessageBody[bodyType];
     
-    const sesPromise = ses.sendEmail(params).promise();
-
-    // Handle promise's fulfilled/rejected states
-    sesPromise.then(
-        function (data) {
-            console.log(data.MessageId);
-        }).catch(
-            function (err) {
-                console.error(err, err.stack);
-            });
+    try {
+        const data = await ses.sendEmail(params).promise();
+        console.log(data);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 

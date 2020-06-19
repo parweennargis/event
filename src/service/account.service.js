@@ -78,14 +78,13 @@ module.exports = {
             expiryDate: date
         };
         await user.save();
-        const html = `<p>
-        Here is the link.
-        <a href="http://localhost:4000/reset-password?token=${user.reset_password.token}">Reset Password</a>
-        </p>`;
-        awsSesService.sendMail({
-            toAddresses: ['ayush.mittal@outlook.com'],
-            subjectBody: 'Forgot Password',
-            bodyData: html
+        awsSesService.sendMail('reset-password.hbs', {
+            toAddresses: [email],
+            subject: 'Forgot Password',
+            data: {
+                resetPasswordLink: `http://localhost:4001/reset-password?token=${user.reset_password.token}`,
+                name: `${user.first_name} ${user.last_name ? user.last_name : ''}`
+            }
         });
     },
     resetPassword: async (token) => {
