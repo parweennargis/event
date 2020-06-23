@@ -1,10 +1,18 @@
 const EventController = require('../controllers/event.controller');
 
+
+
 const eventRoute = (app, router) => {
+    const uploadFields = app.upload.fields([
+        { name: 'images', maxCount: 5 },
+        { name: 'banner', maxCount: 1 },
+        { name: 'floor_plan', maxCount: 1 },
+        { name: 'past_event_images', maxCount: 20 }
+    ]);
 
-    router.post('/events', app.upload.array('files', 5) , EventController.create);
+    router.post('/events', uploadFields , EventController.create);
 
-    router.put('/events/:eventId', app.upload.array('files', 5), EventController.update);
+    router.put('/events/:eventId', uploadFields, EventController.update);
 
     router.delete('/events/:eventId', EventController.delete);
 

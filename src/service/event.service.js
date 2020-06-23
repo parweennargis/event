@@ -48,6 +48,7 @@ module.exports = {
         const promises = event.images.map(image => cloudFrontService.getSignedUrl(image));
         event.images = await Promise.all(promises);
         if(event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
+        if(event.floor_plan) event.floor_plan = await cloudFrontService.getSignedUrl(event.floor_plan);
         return event;
     },
     getAll: async (page = "1", limit = "7", eventCategoryId) => {
@@ -70,6 +71,7 @@ module.exports = {
                 const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
                 item.images = await Promise.all(promises);
                 if(item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
+                if(item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
             }
             const noOfPages = Math.ceil(count / limit);
             return { count, noOfPages, items };

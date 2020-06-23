@@ -74,10 +74,18 @@ const eventSchema = new Schema({
     },
     event_type: {
         type: Schema.Types.String,
-        enum: ['ONLINE', 'VIRTUAL']
+        enum: ['ONLINE', 'VIRTUAL', 'OFFLINE']
     },
     zoom_link: {
         type: Schema.Types.String
+    },
+    past_event: {
+        images: {
+            type: [Schema.Types.String]
+        },
+        videos: {
+            type: [Schema.Types.String]
+        },
     }
 }, {
     timestamps: true

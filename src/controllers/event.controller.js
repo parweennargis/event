@@ -13,21 +13,45 @@ module.exports = {
             // get data from logged in user and map it for event_organized_by;
             body.organized_by = req.user.userId;
             // create event
-            const event = await eventService.createEvent(body)
-            if (files && files.length) {
-                const promises = files.map(file => awsS3Service.uploadFile(file));
-                Promise.all(promises)
-                .then((results) => {
-                    console.log(results);
-                    console.log(event);
-                    const eventJson = event.toJSON();
-                    const imageIds = results.map((result) => result.key);
-                    eventJson.images = imageIds;
-                   return eventService.updateEvent(eventJson._id, eventJson);
-                })
-                .catch((error) => {
-                    console.log('Upload event image error occured: ' + error);
-                });
+            const event = await eventService.createEvent(body);
+            // if (files && Object.keys(files).length) {
+            //     const promises = Object.keys(files).map(file => awsS3Service.uploadFile(file));
+            //     Promise.all(promises)
+            //     .then((results) => {
+            //         console.log(results);
+            //         console.log(event);
+            //         const eventJson = event.toJSON();
+            //         const imageIds = results.map((result) => result.key);
+            //         eventJson.images = imageIds;
+            //        return eventService.updateEvent(eventJson._id, eventJson);
+            //     })
+            //     .catch((error) => {
+            //         console.log('Upload event image error occured: ' + error);
+            //     });
+            // }
+            if (files && Object.keys(files).length) {
+                for (const key in files) {
+                    try {
+                        const promises = files[key].map(file => awsS3Service.uploadFile(file));
+                        const results = await Promise.all(promises);
+                        const eventJson = event.toJSON();
+                        const imageIds = results.map((result) => result.key);
+                        if (key === 'images') {
+                            eventJson[key] = imageIds;
+                        } else if (key === 'past_event_images') {
+                            if (eventJson['past_event']) eventJson['past_event']['images'] = imageIds;
+                                else {
+                                    eventJson['past_event'] = {};
+                                    eventJson['past_event']['images'] = imageIds;
+                                }
+                        } else {
+                            eventJson[key] = imageIds[0];
+                        }
+                        eventService.updateEvent(eventJson._id, eventJson);
+                    } catch (error) {
+                        console.log('Upload event image error occured: ' + error);
+                    }
+                }
             }
             return res.json({ data: event });
         } catch (error) {
@@ -37,15 +61,43 @@ module.exports = {
     },
     update: async (req, res) => {
         try {
+            const { params: { eventId }, body, files } = req;
+
             // validate the request params
-            const { eventId } = req.params;
             if (!eventId) throw new CustomError(400, 'Event id is required');
+
             // validate the request body
-            const { body } = req;
-            // TODO
             validateEventRequest.createEvent(body);
+
+            // get data from logged in user and map it for event_organized_by;
+            body.organized_by = req.user.userId;
+
+            if (files && Object.keys(files).length) {
+                for (const key in files) {
+                    const promises = files[key].map(file => awsS3Service.uploadFile(file));
+                    try {
+                        const results = await Promise.all(promises);
+                        const imageIds = results.map((result) => result.key);
+                        if (key === 'images') {
+                            body[key] = imageIds;
+                        } else if (key === 'past_event_images') {
+                            if (body['past_event']) body['past_event']['images'] = imageIds;
+                            else {
+                                body['past_event'] = {};
+                                body['past_event']['images'] = imageIds;
+                            }
+                        } else {
+                            body[key] = imageIds[0];
+                        }
+                    } catch (error) {
+                        console.log('Upload event image error occured: ' + error);
+                    }
+                }
+            }
+
             // update event
             const event = await eventService.updateEvent(eventId, body);
+
             return res.json({ data: event });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });

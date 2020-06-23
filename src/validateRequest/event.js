@@ -39,12 +39,21 @@ module.exports = {
                         twitter: { type: 'string' },
                         youtube: { type: 'string' },
                         linkedln: { type: 'string' },
+                        instagram: { type: 'string' }
                     }
                 },
                 is_opening_soon: { type: 'string', enum: ['true', 'false'] },
                 event_category: { type: 'array', items: { type: 'string', format: 'objectId' } },
                 pricing: { type: 'array', items: { type: 'string', format: 'objectId' } },
-                event_type: { type: 'string', enum: ['ONLINE', 'VIRTUAL'] }
+                event_type: { type: 'string', enum: ['ONLINE', 'VIRTUAL', 'OFFLINE'] },
+                is_active: { type: 'string', enum: ['true', 'false'] },
+                past_event: {
+                    type: 'object',
+                    properties: {
+                        images: { type: 'array', items: { type: 'string' } },
+                        videos: { type: 'array', items: { type: 'string' } },
+                    }
+                }
             },
             required: [
                 'title', 'start_date', 'venue', 'description', 'event_category', 'event_type'
