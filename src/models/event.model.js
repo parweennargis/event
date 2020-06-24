@@ -1,6 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const imageSchema = new Schema({
+    image: {
+        type: Schema.Types.String
+    }
+});
+const videoSchema = new Schema({
+    video: {
+        type: Schema.Types.String
+    }
+});
+
 const eventSchema = new Schema({
     title: {
         type: Schema.Types.String
@@ -79,14 +90,17 @@ const eventSchema = new Schema({
     zoom_link: {
         type: Schema.Types.String
     },
-    past_event: {
-        images: {
-            type: [Schema.Types.String]
-        },
-        videos: {
-            type: [Schema.Types.String]
-        },
-    }
+    past_event_banner_image: { type: Schema.Types.String },
+    past_event_image: [{ type: imageSchema }],
+    past_event_video: [{ type: videoSchema }],
+    // past_event: {
+    //     images: {
+    //         type: [Schema.Types.String]
+    //     },
+    //     videos: {
+    //         type: [Schema.Types.String]
+    //     },
+    // }
 }, {
     timestamps: true
 });

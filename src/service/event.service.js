@@ -20,8 +20,10 @@ module.exports = {
             if (eventCategories.length !== event_category.length) throw new CustomError(404, 'Invalid Event Category.');
 
             // check all pricing exist or not
-            const pricings = await pricingRepository.find({ _id: { $in: pricing } }, 'name');
-            if (pricings.length !== pricing.length) throw new CustomError(404, 'Invalid Pricing.');
+            if (!_.isEmpty(pricing)) {
+                const pricings = await pricingRepository.find({ _id: { $in: pricing } }, 'name');
+                if (pricings.length !== pricing.length) throw new CustomError(404, 'Invalid Pricing.');
+            }
 
             //TODO: upload array of images
             const event = await eventRepository.create(data);
@@ -47,8 +49,8 @@ module.exports = {
         if (!event) throw new CustomError(404, 'Event not found');
         const promises = event.images.map(image => cloudFrontService.getSignedUrl(image));
         event.images = await Promise.all(promises);
-        if(event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
-        if(event.floor_plan) event.floor_plan = await cloudFrontService.getSignedUrl(event.floor_plan);
+        if (event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
+        if (event.floor_plan) event.floor_plan = await cloudFrontService.getSignedUrl(event.floor_plan);
         return event;
     },
     getAll: async (page = "1", limit = "7", eventCategoryId) => {
@@ -70,8 +72,8 @@ module.exports = {
             for (const item of items) {
                 const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
                 item.images = await Promise.all(promises);
-                if(item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
-                if(item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
+                if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
+                if (item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
             }
             const noOfPages = Math.ceil(count / limit);
             return { count, noOfPages, items };
