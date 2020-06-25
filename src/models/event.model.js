@@ -5,11 +5,15 @@ const imageSchema = new Schema({
     image: {
         type: Schema.Types.String
     }
+}, {
+    timestamps: true
 });
 const videoSchema = new Schema({
     video: {
         type: Schema.Types.String
     }
+}, {
+    timestamps: true
 });
 
 const eventSchema = new Schema({

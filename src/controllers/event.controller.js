@@ -9,7 +9,7 @@ module.exports = {
             // validate the request body
             const { body, files } = req;
             validateEventRequest.createEvent(body);
-            
+
             // get data from logged in user and map it for event_organized_by;
             body.organized_by = req.user.userId;
             // create event
@@ -39,11 +39,16 @@ module.exports = {
                         if (key === 'images') {
                             eventJson[key] = imageIds;
                         } else if (key === 'past_event_images') {
-                            if (eventJson['past_event']) eventJson['past_event']['images'] = imageIds;
-                                else {
-                                    eventJson['past_event'] = {};
-                                    eventJson['past_event']['images'] = imageIds;
-                                }
+                            let pastEventImageArray = [];
+                            for (const image of imageIds) {
+                                pastEventImageArray.push({ image });
+                            }
+                            eventJson['past_event_image'] = pastEventImageArray;
+                            // if (eventJson['past_event']) eventJson['past_event']['images'] = imageIds;
+                            // else {
+                            //     eventJson['past_event'] = {};
+                            //     eventJson['past_event']['images'] = imageIds;
+                            // }
                         } else {
                             eventJson[key] = imageIds[0];
                         }
@@ -81,11 +86,17 @@ module.exports = {
                         if (key === 'images') {
                             body[key] = imageIds;
                         } else if (key === 'past_event_images') {
-                            if (body['past_event']) body['past_event']['images'] = imageIds;
-                            else {
-                                body['past_event'] = {};
-                                body['past_event']['images'] = imageIds;
+                            let pastEventImageArray = [];
+                            for (const image of imageIds) {
+                                pastEventImageArray.push({ image });
                             }
+                            body['past_event_image'] = pastEventImageArray;
+                            // if (body['past_event']) body['past_event']['images'] = imageIds;
+                            // else {
+                            //     body['past_event'] = {};
+                            //     body['past_event']['images'] = imageIds;
+                            const eventImage = { $push: { past_event_image: pastEventImageArray } };
+                            await eventService.updateEvent(eventId, eventImage);
                         } else {
                             body[key] = imageIds[0];
                         }
@@ -116,7 +127,7 @@ module.exports = {
     getAll: async (req, res) => {
         try {
             const { query: { page, limit, eventCategoryId } } = req;
-            const events =  await eventService.getAll(page, limit, eventCategoryId);
+            const events = await eventService.getAll(page, limit, eventCategoryId);
             return res.json({ data: events });
         } catch (error) {
             console.log(error);
@@ -127,7 +138,7 @@ module.exports = {
         try {
             const { eventId } = req.params;
             if (!eventId) throw new CustomError(400, 'Event id is required');
-            const event =  await eventService.getEventDetail(eventId);
+            const event = await eventService.getEventDetail(eventId);
             return res.json({ data: event });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
@@ -138,7 +149,7 @@ module.exports = {
             const { categoryId } = req.params;
             if (!categoryId) throw new CustomError(400, 'Invalid Request');
 
-            const event =  await eventService.getEventByCategory(categoryId);
+            const event = await eventService.getEventByCategory(categoryId);
             return res.json({ data: event });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
@@ -146,7 +157,7 @@ module.exports = {
     },
     getAllEvents: async (req, res) => {
         try {
-            const events =  await eventService.getAllEvents(req.body);
+            const events = await eventService.getAllEvents(req.body);
             console.log(events);
             return res.json({ data: events });
         } catch (error) {
@@ -157,7 +168,7 @@ module.exports = {
     getAllOfflineEvent: async (req, res) => {
         try {
             const { query: { page, limit, eventCategoryId } } = req;
-            const events =  await eventService.getAllOfflineEvent(page, limit, eventCategoryId);
+            const events = await eventService.getAllOfflineEvent(page, limit, eventCategoryId);
             return res.json({ data: events });
         } catch (error) {
             console.log(error);
