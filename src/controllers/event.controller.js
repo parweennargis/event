@@ -12,6 +12,10 @@ module.exports = {
 
             // get data from logged in user and map it for event_organized_by;
             body.organized_by = req.user.userId;
+            if (body.past_event_video) body.past_event_video = body.past_event_video.reduce((prev, curr) => {
+                prev.push({ video: curr });
+                return prev;
+            }, []);
             // create event
             const event = await eventService.createEvent(body);
             // if (files && Object.keys(files).length) {
@@ -105,6 +109,10 @@ module.exports = {
                     }
                 }
             }
+            if (body.past_event_video) body.past_event_video = body.past_event_video.reduce((prev, curr) => {
+                prev.push({ video: curr });
+                return prev;
+            }, []);
 
             // update event
             const event = await eventService.updateEvent(eventId, body);

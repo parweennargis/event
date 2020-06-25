@@ -51,6 +51,14 @@ module.exports = {
         event.images = await Promise.all(promises);
         if (event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
         if (event.floor_plan) event.floor_plan = await cloudFrontService.getSignedUrl(event.floor_plan);
+        if (event.past_event_image) {
+            const pastEventImagesPromises = event.past_event_image.map(async(item) => {
+                item.image = await cloudFrontService.getSignedUrl(item.image)
+                return item;
+            });
+            event.past_event_image = await Promise.all(pastEventImagesPromises);
+        }
+        
         return event;
     },
     getAll: async (page = "1", limit = "7", eventCategoryId) => {
