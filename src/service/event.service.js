@@ -125,4 +125,35 @@ module.exports = {
             throw new CustomError(400, error.message);
         }
     },
+    previousEvents: async (eventCategoryId) => {
+        if (!eventCategoryId) {
+            const eventCategoryDefault = await eventCategoryRepository.findOne({ default: true });
+            if (eventCategoryDefault) eventCategoryId = eventCategoryDefault.id
+        }
+        let query = {};
+        query.match = { 
+            event_category: mongoose.Types.ObjectId(eventCategoryId),
+            start_date: { $lte: new Date() }
+        };
+        // query.skip = (+page - 1) * +limit;
+        query.sort = { startDate: 'desc' };
+        // query.limit = +limit;
+        const promises = [
+            eventRepository.count(query.match),
+            eventRepository.paginateItems(query)
+        ];
+        try {
+            const [count, items] = await Promise.all(promises);
+            for (const item of items) {
+                const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
+                item.images = await Promise.all(promises);
+                if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
+                if (item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
+            }
+            // const noOfPages = Math.ceil(count / limit);
+            return { count, items };
+        } catch (error) {
+            throw new CustomError(400, error.message);
+        }
+    },
 }

@@ -183,4 +183,14 @@ module.exports = {
             return res.status(400).json({ errors: error.errors || error.message });
         }
     },
+    previousEvents: async (req, res) => {
+        try {
+            const { query: { eventCategoryId } } = req;
+            const events = await eventService.previousEvents(eventCategoryId);
+            return res.json({ data: events });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ errors: error.errors || error.message });
+        }
+    },
 };

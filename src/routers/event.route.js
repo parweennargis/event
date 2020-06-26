@@ -28,6 +28,8 @@ const eventRoute = (app, router) => {
 
     router.get('/offline-events', EventController.getAllOfflineEvent);
 
+    router.get('/previous-events', EventController.previousEvents);
+
     return router;
 };
 
