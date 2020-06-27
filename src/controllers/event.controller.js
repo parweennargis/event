@@ -18,21 +18,6 @@ module.exports = {
             }, []);
             // create event
             const event = await eventService.createEvent(body);
-            // if (files && Object.keys(files).length) {
-            //     const promises = Object.keys(files).map(file => awsS3Service.uploadFile(file));
-            //     Promise.all(promises)
-            //     .then((results) => {
-            //         console.log(results);
-            //         console.log(event);
-            //         const eventJson = event.toJSON();
-            //         const imageIds = results.map((result) => result.key);
-            //         eventJson.images = imageIds;
-            //        return eventService.updateEvent(eventJson._id, eventJson);
-            //     })
-            //     .catch((error) => {
-            //         console.log('Upload event image error occured: ' + error);
-            //     });
-            // }
             if (files && Object.keys(files).length) {
                 for (const key in files) {
                     try {
@@ -48,11 +33,6 @@ module.exports = {
                                 pastEventImageArray.push({ image });
                             }
                             eventJson['past_event_image'] = pastEventImageArray;
-                            // if (eventJson['past_event']) eventJson['past_event']['images'] = imageIds;
-                            // else {
-                            //     eventJson['past_event'] = {};
-                            //     eventJson['past_event']['images'] = imageIds;
-                            // }
                         } else {
                             eventJson[key] = imageIds[0];
                         }
@@ -95,10 +75,6 @@ module.exports = {
                                 pastEventImageArray.push({ image });
                             }
                             body['past_event_image'] = pastEventImageArray;
-                            // if (body['past_event']) body['past_event']['images'] = imageIds;
-                            // else {
-                            //     body['past_event'] = {};
-                            //     body['past_event']['images'] = imageIds;
                             const eventImage = { $push: { past_event_image: pastEventImageArray } };
                             await eventService.updateEvent(eventId, eventImage);
                         } else {

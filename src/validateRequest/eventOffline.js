@@ -32,7 +32,10 @@ module.exports = {
                 },
                 is_active: { type: 'boolean' },
                 event_type: { type: 'string', enum: ['ONLINE', 'VIRTUAL'] },
-                zoom_link: { type: 'string' }
+                zoom_link: { type: 'string' },
+                past_event_video: { type: 'array', items: { type: 'string' } },
+                past_event_images: { type: 'array', items: { type: 'string' } },
+                past_event_banner_image: { type: 'string' },
             },
             required: [
                 'title', 'start_date', 'description', 'event_category', 'event_type', 'is_active', 'zoom_link'

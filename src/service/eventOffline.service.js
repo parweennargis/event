@@ -42,6 +42,14 @@ module.exports = {
         const promises = event.images.map(image => cloudFrontService.getSignedUrl(image));
         event.images = await Promise.all(promises);
         if(event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
+        if (event.past_event_image) {
+            const pastEventImagesPromises = event.past_event_image.map(async(item) => {
+                item.image = await cloudFrontService.getSignedUrl(item.image)
+                return item;
+            });
+            event.past_event_image = await Promise.all(pastEventImagesPromises);
+        }
+        if (event.past_event_banner_image) event.past_event_banner_image = await cloudFrontService.getSignedUrl(event.past_event_banner_image);
         return event;
     },
     getAll: async (page = "1", limit = "7", eventCategoryId) => {
