@@ -7,7 +7,8 @@ const eventRoute = (app, router) => {
         { name: 'images', maxCount: 5 },
         { name: 'banner', maxCount: 1 },
         { name: 'floor_plan', maxCount: 1 },
-        { name: 'past_event_images', maxCount: 20 }
+        { name: 'past_event_images', maxCount: 20 },
+        { name: 'past_event_banner_image', maxCount: 1 }
     ]);
 
     router.post('/events', uploadFields , EventController.create);

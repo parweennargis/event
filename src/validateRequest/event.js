@@ -49,6 +49,7 @@ module.exports = {
                 is_active: { type: 'string', enum: ['true', 'false'] },
                 past_event_video: { type: 'array', items: { type: 'string' } },
                 past_event_images: { type: 'array', items: { type: 'string' } },
+                past_event_banner_image: { type: 'string' },
             },
             required: [
                 'title', 'start_date', 'venue', 'description', 'event_category', 'event_type'

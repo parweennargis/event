@@ -58,6 +58,7 @@ module.exports = {
             });
             event.past_event_image = await Promise.all(pastEventImagesPromises);
         }
+        if (event.past_event_banner_image) event.past_event_banner_image = await cloudFrontService.getSignedUrl(event.past_event_banner_image);
         
         return event;
     },
@@ -145,10 +146,11 @@ module.exports = {
         try {
             const [count, items] = await Promise.all(promises);
             for (const item of items) {
-                const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
-                item.images = await Promise.all(promises);
-                if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
-                if (item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
+                // const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
+                // item.images = await Promise.all(promises);
+                // if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
+                // if (item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
+                if (item.past_event_banner_image) item.past_event_banner_image = await cloudFrontService.getSignedUrl(item.past_event_banner_image);
             }
             // const noOfPages = Math.ceil(count / limit);
             return { count, items };
