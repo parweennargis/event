@@ -68,14 +68,16 @@ module.exports = {
                         const results = await Promise.all(promises);
                         const imageIds = results.map((result) => result.key);
                         if (key === 'images') {
-                            body[key] = imageIds;
+                            // body[key] = imageIds;
+                            const eventImage = { "$push": { "images": { "$each": imageIds } } };
+                            await eventService.updateEvent(eventId, eventImage);
                         } else if (key === 'past_event_images') {
                             let pastEventImageArray = [];
                             for (const image of imageIds) {
                                 pastEventImageArray.push({ image });
                             }
-                            body['past_event_image'] = pastEventImageArray;
-                            const eventImage = { $push: { past_event_image: pastEventImageArray } };
+                            // body['past_event_image'] = pastEventImageArray;
+                            const eventImage = { "$push": { "past_event_image": { "$each": pastEventImageArray } } };
                             await eventService.updateEvent(eventId, eventImage);
                         } else {
                             body[key] = imageIds[0];

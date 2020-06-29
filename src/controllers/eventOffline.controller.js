@@ -85,11 +85,7 @@ module.exports = {
             body.is_active = body.is_active === 'true' ? true : false;
             // validate the request body
             validateOfflineEventRequest.createEvent(body);
-            // update event
-            // if (file) {
-            //     const image = await awsS3Service.uploadFile(file);
-            //     if (image) body.banner = image.key;
-            // }
+
             if (files && Object.keys(files).length) {
                 for (const key in files) {
                     const promises = files[key].map(file => awsS3Service.uploadFile(file));
@@ -97,13 +93,15 @@ module.exports = {
                         const results = await Promise.all(promises);
                         const imageIds = results.map((result) => result.key);
                         if (key === 'images') {
-                            body[key] = imageIds;
+                            // body[key] = imageIds;
+                            const eventImage = { "$push": { "images": { "$each": imageIds } } };
+                            await eventService.updateEvent(eventId, eventImage);
                         } else if (key === 'past_event_images') {
                             let pastEventImageArray = [];
                             for (const image of imageIds) {
                                 pastEventImageArray.push({ image });
                             }
-                            body['past_event_image'] = pastEventImageArray;
+                            // body['past_event_image'] = pastEventImageArray;
                             const eventImage = { $push: { past_event_image: pastEventImageArray } };
                             await eventOfflineService.updateEvent(eventId, eventImage);
                         } else {
