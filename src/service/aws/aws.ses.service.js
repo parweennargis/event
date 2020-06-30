@@ -20,8 +20,11 @@ const sendMail = async (emailTemplate, { toAddresses, subject, data = {}, bodyTy
     //Check bodyType it should be Html or Text
     //Check toAddresses it should have atleast one length
     // Check subjectBody
-    const source = fs.readFileSync(path.join(__dirname, '../../../views/email_templates/' + emailTemplate), 'utf8');
+    const emailTemplateBody = fs.readFileSync(path.join(__dirname, '../../../views/email_templates/' + emailTemplate), 'utf8');
+    const source = fs.readFileSync(path.join(__dirname, '../../../views/email_templates/main.hbs'), 'utf8');
 
+    Handlebars.registerPartial('myPartial', emailTemplateBody);
+    
     const template = Handlebars.compile(source);
 
     // Create sendEmail params 

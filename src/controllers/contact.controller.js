@@ -1,4 +1,5 @@
 const contactService = require('../service/contact.service');
+const awsSesService = require('../service/aws/aws.ses.service');
 const contactValidation = require('../validateRequest/contact');
 
 module.exports = {
@@ -7,6 +8,13 @@ module.exports = {
             const { body } = req;
             contactValidation.contact(body);
             const result = await contactService.createContact(body);
+            awsSesService.sendMail('contact-us.hbs', {
+                toAddresses: [result.email],
+                subject: 'Contact Us',
+                data: {
+                    name: result.name
+                }
+            });
             return res.json({ data: result });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
