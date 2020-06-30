@@ -14,11 +14,12 @@ const uploadFile = async (file) => {
         try {
             // Read content from the file
             const fileContent = fs.readFileSync(file.path);
-    
+            const timestamp = new Date().getTime();
+            const fileName = file.originalname.split('.');
             // Setting up S3 upload parameters
             const params = {
                 Bucket: config.AWS.S3.bucketName,
-                Key: file.originalname, // File name you want to save as in S3
+                Key: `${fileName[0]}-${timestamp}.${fileName[1] || 'jpg'}`, // File name you want to save as in S3
                 Body: fileContent
             };
     
