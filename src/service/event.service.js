@@ -52,14 +52,14 @@ module.exports = {
         if (event.banner) event.banner = await cloudFrontService.getSignedUrl(event.banner);
         if (event.floor_plan) event.floor_plan = await cloudFrontService.getSignedUrl(event.floor_plan);
         if (event.past_event_image) {
-            const pastEventImagesPromises = event.past_event_image.map(async(item) => {
+            const pastEventImagesPromises = event.past_event_image.map(async (item) => {
                 item.image = await cloudFrontService.getSignedUrl(item.image)
                 return item;
             });
             event.past_event_image = await Promise.all(pastEventImagesPromises);
         }
         if (event.past_event_banner_image) event.past_event_banner_image = await cloudFrontService.getSignedUrl(event.past_event_banner_image);
-        
+
         return event;
     },
     getAll: async (page = "1", limit = "7", eventCategoryId) => {
@@ -68,12 +68,12 @@ module.exports = {
             if (eventCategoryDefault) eventCategoryId = eventCategoryDefault.id
         }
         let query = {};
-        query.match = { is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId) };
+        query.match = { is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId), start_date: { $gte: new Date() } };
         query.skip = (+page - 1) * +limit;
         query.sort = { startDate: 'asc' };
         query.limit = +limit;
         const promises = [
-            eventRepository.count({ is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId) }),
+            eventRepository.count({ is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId), start_date: { $gte: new Date() } }),
             eventRepository.paginateItems(query)
         ];
         try {
@@ -132,12 +132,13 @@ module.exports = {
             if (eventCategoryDefault) eventCategoryId = eventCategoryDefault.id
         }
         let query = {};
-        query.match = { 
+        query.match = {
             event_category: mongoose.Types.ObjectId(eventCategoryId),
-            start_date: { $lte: new Date() }
+            start_date: { $lte: new Date() },
+            past_event_image: { $exists: true, $not: { $size: 0 } }
         };
         // query.skip = (+page - 1) * +limit;
-        query.sort = { startDate: 'desc' };
+        query.sort = { start_date: 'desc' };
         // query.limit = +limit;
         const promises = [
             eventRepository.count(query.match),
