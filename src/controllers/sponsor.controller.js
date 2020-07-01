@@ -9,8 +9,8 @@ module.exports = {
             const { body } = req;
             validateSponsorRequest.sponsor(body);
             // upload image if send in request body
-            if (req.file) {
-                const uploadFileData = await awsS3Service.uploadFile(req.file);
+            if (req.image) {
+                const uploadFileData = await awsS3Service.uploadFile(req.image);
                 body.image = uploadFileData ? uploadFileData.key : '';
             }
             // create sponsor

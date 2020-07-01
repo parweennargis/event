@@ -1,7 +1,7 @@
 const SponsorController = require('../controllers/sponsor.controller');
 
 const sponsorRoute = (app, router) => {
-    router.post('/sponsors', app.upload.single('file'), SponsorController.createSponsor);
+    router.post('/sponsors', app.upload.single('image'), SponsorController.createSponsor);
 
     router.put('/sponsors/:sponsorId', app.upload.single('file'), SponsorController.updateSponsor);
 

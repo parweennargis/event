@@ -7,7 +7,8 @@ module.exports = {
             properties: {
                 title: { type: 'string' },
                 description: { type: 'string' },
-                file: { type: 'string' }
+                image: { type: 'string' },
+                website: { type: 'string' }
             },
             required: [
                 'title'
