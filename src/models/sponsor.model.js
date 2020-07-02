@@ -14,6 +14,9 @@ const sponsorSchema = new Schema({
     title: {
         type: Schema.Types.String
     },
+    website: {
+        type: Schema.Types.String
+    },
     is_active: {
         type: Schema.Types.Boolean,
         default: true

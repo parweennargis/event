@@ -32,7 +32,9 @@ module.exports = {
     },
     getSponsors: async (req, res) => {
         try {
-            const sponsors = await sponsorService.getSponsors();
+            const { query = {} } = req;
+            const sponsors = await sponsorService.getSponsors(query);
+
             return res.json({ data: sponsors });
         } catch (error) {
             console.log(error);
