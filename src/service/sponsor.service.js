@@ -13,24 +13,28 @@ module.exports = {
         return sponsorRepository.findByIdAndUpdate(sponsorId, data);
     },
     getSponsors: async () => {
-        let sponsers = await sponsorRepository.find({ is_active: true });
-        if (!_.isEmpty(sponsers)) {
-            sponsers = _.map(sponsers, sponser => {
-                return sponser.toObject();
-            });
-            const imagePromise = sponsers.map(async (item) => {
-                item.image_url = await cloudFrontService.getSignedUrl(item.image)
-                return item;
-            });
-            sponsers.image_url = await Promise.all(imagePromise);
-        }
+        // let sponsors = await sponsorRepository.find({ is_active: true });
+        let sponsors = await sponsorRepository.find();
+        sponsors = (sponsors || []).map(async (item) => {
+            item = item.toJSON();
+            if (item.image) item.image_url = await cloudFrontService.getSignedUrl(item.image)
+            return item;
+        });
 
-        return sponsers;
+        return Promise.all(sponsors);
     },
     deleteSponsor: async (sponsorId) => {
         const sponsor = await sponsorRepository.findOne({ _id: sponsorId })
         if (!sponsor) throw new CustomError(404, 'Sponsor not found');
         sponsor.is_active = false;
         return sponsor.save();
-    }
+    },
+    getSponsorById: async (sponsorId) => {
+        let sponsor = await sponsorRepository.findOne({ _id: sponsorId })
+        if (!sponsor) throw new CustomError(404, 'Sponsor not found');
+        sponsor = sponsor.toJSON();
+        if (sponsor.image) sponsor.image_url = await cloudFrontService.getSignedUrl(sponsor.image)
+
+        return sponsor;
+    },
 }
