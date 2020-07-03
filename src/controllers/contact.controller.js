@@ -32,7 +32,7 @@ module.exports = {
             });
             return res.json({ data: result });
         } catch (error) {
-            return res.status(400).json({ errors: error.errors || error.message });
+            return res.status(400).json({ errors: 'You are aleady subscribed!!' });
         }
     }
 };
