@@ -76,7 +76,11 @@ const userSchema = new Schema({
     business_description: Schema.Types.String,
     event_follows: {
         type: [Schema.Types.ObjectId]
-    }
+    },
+    license_type: Schema.Types.String,
+    license_number: Schema.Types.String,
+    license_date_of_expiry: Schema.Types.String,
+    driving_record_rating: Schema.Types.String,
     // TODO: profile elemnent track
     // profile_element_track: { 
     //  type: [Schema.Types.String]   
