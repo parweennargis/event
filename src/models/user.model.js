@@ -9,8 +9,7 @@ const userSchema = new Schema({
         required: [true, 'First Name is required']
     },
     last_name: {
-        type: String,
-        required: [true, 'Last Name is required']
+        type: String
     },
     email: {
         type: Schema.Types.String,

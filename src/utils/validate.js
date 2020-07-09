@@ -24,11 +24,17 @@ module.exports = function validate(data, schema) {
 
     // extract error message
     let message;
-    if (_.has(result.error, 'dataPath') && result.error.dataPath.length) {
-        message = `${result.error.message} at ${result.error.dataPath}`;
-    } else {
+    try {
+        if (_.has(result.error, 'dataPath') && result.error.dataPath.length) {
+            let dataPath = result.error.dataPath.split('/')[1].split('_').map(name => name.charAt(0).toUpperCase() + name.slice(1)).join(' ');
+            message = `${result.error.message} at ${dataPath}`;
+        } else {
+            message = result.error.message;
+        }    
+    } catch (error) {
         message = result.error.message;
     }
+    
 
     // send validation error with message
     throw new CustomError(400, message)
