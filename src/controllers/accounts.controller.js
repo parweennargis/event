@@ -31,16 +31,7 @@ module.exports = {
                 const loggedIn = await accountService.login({ email: reqBody.email, password: reqBody.password });
                 user.token = loggedIn.token;
             }
-            awsSesService.sendMail('register.hbs', {
-                toAddresses: [user.email],
-                subject: 'TTN Register',
-                data: { 
-                    name: `${user.first_name} ${user.last_name ? user.last_name : ''}`,
-                    email: user.email,
-                    url: 'http://dev.neuproelectro.com'
-                }
-            });
-
+            
             return res.json({ data: user });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
@@ -107,6 +98,16 @@ module.exports = {
             validateAccounts.changePassword(body);
             const { token, password } = body;
             await accountService.changePassword(token, password);
+            return res.json({});
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ errors: error.errors || error.message });
+        }
+    },
+    activateAccount: async (req, res) => {
+        try {
+            const { body: { token } } = req;
+            await accountService.activateAccount(token);
             return res.json({});
         } catch (error) {
             console.log(error);

@@ -14,5 +14,6 @@ module.exports = {
             privateKey: fs.readFileSync(process.env.CLOUDFRONT_PRIVATE_KEY_PATH),
             url: process.env.CLOUDFRONT_URL
         }
-    }
+    },
+    websiteUrl: process.env.WEBSITE_URL
 };

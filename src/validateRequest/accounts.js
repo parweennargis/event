@@ -82,7 +82,7 @@ module.exports = {
                 current_position: { type: 'string' },
                 heard_about: { type: 'string', enum: ['FACEBOOK', 'TWITTER', 'LINKEDIN', 'INSTAGRAM', 'GOOGLE', 'MAGAZINE', 'WEBSITE', 'BANNER', 'KIJIJI', 'EMAIL', 'NOTIFICATION', 'RADIO', 'TV', 'BROADCAST', 'WEBINAR'] }
             },
-            required: ['first_name', 'email', 'password', 'phone_no', 'address', 'postal_code', 'heard_about']
+            required: ['first_name', 'email', 'password', 'phone_no', 'address', 'postal_code', 'company_name', 'current_position', 'heard_about']
         });
     },
 }

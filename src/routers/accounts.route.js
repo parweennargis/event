@@ -21,6 +21,8 @@ const accountsRoutes = (app, router) => {
 
     router.post('/change-password', AccountController.changePassword);
 
+    router.post('/activate-account', AccountController.activateAccount);
+
     return router;
 };
 

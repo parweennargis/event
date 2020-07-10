@@ -80,6 +80,14 @@ const userSchema = new Schema({
     license_number: Schema.Types.String,
     license_date_of_expiry: Schema.Types.String,
     driving_record_rating: Schema.Types.String,
+    is_active: {
+        type: Schema.Types.Boolean,
+        default: false
+    },
+    activate_account: {
+        token: Schema.Types.String,
+        expiryDate: Schema.Types.Date
+    }
     // TODO: profile elemnent track
     // profile_element_track: { 
     //  type: [Schema.Types.String]   
