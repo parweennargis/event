@@ -128,7 +128,7 @@ module.exports = {
     activateAccount: async (token) => {
         let user = await userRepository.findOne({ 'activate_account.token': token }, 'activate_account is_active email first_name last_name');
         if (!user) throw new CustomError(400, 'Link is expired');
-        user = user.toJSON();
+        // user = user.toJSON();
         if (user.is_active) throw new CustomError(400, 'Link is expired');
         const { activate_account: { expiryDate } } = user;
         const currentTime = (new Date()).getTime();
