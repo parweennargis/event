@@ -11,13 +11,10 @@ const config = require('../../config');
 
 module.exports = {
     register: async (data) => {
-        const { role_type, company_name, company_website, email, total_experience, password, occupation, occupation_looking_for, current_position } = data;
+        const { email, password } = data;
 
         // check email is unique or not 
-        if (!await module.exports.isEmailUnique(email)) throw new CustomError(404, `User with ${email} already exist. Please login again.`);
-        // check role_type, accordingly check the field value.
-        // if (role_type === 'EXHIBITOR' && (_.isNil(company_name) || _.isNil(company_website) || _.isNil(current_position))) throw new CustomError(404, 'Required Properties Missing');
-        // if (role_type === 'JOBSEEKER' && (_.isNil(total_experience) || _.isNil(occupation) || _.isNil(occupation_looking_for))) throw new CustomError(404, 'Required Properties Missing');
+        if (!await module.exports.isEmailUnique(email)) throw new CustomError(404, `User with ${email} already exist.`);
 
         // create hash password
         data.password = User.HashPassword(password);
@@ -25,6 +22,7 @@ module.exports = {
         var date = new Date();
         // Add a day
         date.setDate(date.getDate() + 2);
+        // Activate account login token
         data.activate_account = {
             token: uuidv4(),
             expiryDate: date
