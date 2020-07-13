@@ -13,8 +13,8 @@ module.exports = {
     register: async (data) => {
         const { email, password } = data;
 
-        // check email is unique or not 
-        if (!await module.exports.isEmailUnique(email)) throw new CustomError(404, `User with ${email} already exist.`);
+        // // check email is unique or not 
+        // if (!await module.exports.isEmailUnique(email)) throw new CustomError(404, `User with ${email} already exist.`);
 
         // create hash password
         data.password = User.HashPassword(password);
