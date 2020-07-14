@@ -6,7 +6,7 @@ module.exports = {
             type: 'object',
             properties: {
                 name: { type: 'string' },
-                email: { type: 'string' },
+                email: { type: 'string', format: 'email', maxLength: 50 },
                 phone_no: { type: 'string' },
                 subject: { type: 'string' },
                 message: { type: 'string' },
