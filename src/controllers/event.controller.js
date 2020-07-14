@@ -144,7 +144,7 @@ module.exports = {
     getAllEvents: async (req, res) => {
         try {
             const events = await eventService.getAllEvents(req.body);
-            console.log(events);
+            // console.log(events);
             return res.json({ data: events });
         } catch (error) {
             console.log(error);

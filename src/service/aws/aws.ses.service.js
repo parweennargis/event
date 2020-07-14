@@ -45,7 +45,7 @@ const sendMail = async (emailTemplate, { toAddresses, subject, data = {}, bodyTy
                 Data: subject
             }
         },
-        Source: 'info@neuproelectro.com', /* required */
+        Source: 'info@thetruckingnetworkevents.ca', /* required */
         // ReplyToAddresses: [
         //    'EMAIL_ADDRESS',
         //   /* more items */

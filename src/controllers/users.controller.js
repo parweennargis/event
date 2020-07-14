@@ -1,6 +1,22 @@
 const userService = require('../service/user.service');
 const awsS3Service = require('../service/aws/aws.s3.service');
 const cloudFrontService = require('../service/aws/aws.cloudfront.service');
+const validateProfile = require('../validateRequest/profile');
+
+const CustomError = require('../utils/error');
+
+const checkProfileBody = (roleType, body) => {
+    switch(roleType) {
+        case 'ATTENDEE':
+            return validateProfile.profileAttendee(body);
+         case 'EXHIBITOR':
+             return validateProfile.profileExhibitor(body);
+        case 'JOBSEEKER':
+            return validateProfile.profileJobSeeker(body);
+        default:
+            throw new CustomError(400, 'Invalid Request');
+    }   
+}
 
 module.exports = {
     userList: async (req, res) => {
@@ -36,8 +52,12 @@ module.exports = {
     },
     updateProfile: async (req, res) => {
         try {
-            const { user: { userId }, body } = req;
+            const { user: { userId, role }, body } = req;
+            // validate the body
+            checkProfileBody(role, body);
+            // update user profile
             const user = await userService.updateProfile(userId, body);
+
             return res.json({ data: user});
         } catch (error) {
             console.log(error);

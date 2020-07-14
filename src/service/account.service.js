@@ -51,7 +51,7 @@ module.exports = {
 
         if (user.password !== User.HashPassword(password)) throw new CustomError(400, 'Email/Password is incorrect');
 
-        return { token: createToken({ userId: user.id, email: user.email }), user: { userId: user.id, email: user.email } };
+        return { token: createToken({ userId: user.id, email: user.email, role: user.role_type }), user: { userId: user.id, email: user.email } };
     },
     isEmailUnique: async (email) => {
         const data = await userRepository.findOne({ email }, 'email');
