@@ -38,7 +38,8 @@ module.exports = {
             subject: 'TTN Account Activation',
             data: { 
                 name: `${user.first_name} ${user.last_name ? user.last_name : ''}`,
-                activationLink: `${config.websiteUrl}/activate-account?token=${user.activate_account.token}`
+                activationLink: `${config.websiteUrl}/activate-account?token=${user.activate_account.token}`,
+                websiteUrl: `${config.websiteUrl}`
             }
         });
 
@@ -97,8 +98,9 @@ module.exports = {
             toAddresses: [email],
             subject: 'Forgot Password',
             data: {
-                resetPasswordLink: `http://localhost:4001/reset-password?token=${user.reset_password.token}`,
-                name: `${user.first_name} ${user.last_name ? user.last_name : ''}`
+                resetPasswordLink: `${config.websiteUrl}/reset-password?token=${user.reset_password.token}`,
+                name: `${user.first_name} ${user.last_name ? user.last_name : ''}`,
+                websiteUrl: `${config.websiteUrl}`
             }
         });
     },
@@ -143,7 +145,8 @@ module.exports = {
             data: { 
                 name: `${user.first_name} ${user.last_name ? user.last_name : ''}`,
                 email: user.email,
-                url: `${config.websiteUrl}`
+                url: `${config.websiteUrl}`,
+                websiteUrl: `${config.websiteUrl}`
             }
         });
     }

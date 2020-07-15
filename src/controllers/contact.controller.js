@@ -2,6 +2,8 @@ const contactService = require('../service/contact.service');
 const awsSesService = require('../service/aws/aws.ses.service');
 const contactValidation = require('../validateRequest/contact');
 
+const config = require('../../config');
+
 module.exports = {
     createContact: async (req, res) => {
         try {
@@ -12,7 +14,8 @@ module.exports = {
                 toAddresses: [result.email],
                 subject: 'Contact Us',
                 data: {
-                    name: result.name
+                    name: result.name,
+                    websiteUrl: `${config.websiteUrl}`
                 }
             });
             return res.json({ data: result });
@@ -28,7 +31,9 @@ module.exports = {
             awsSesService.sendMail('subscribe.hbs', {
                 toAddresses: [result.email],
                 subject: 'The Trucking Network Subscription',
-                data: { }
+                data: { 
+                    websiteUrl: `${config.websiteUrl}`
+                }
             });
             return res.json({ data: result });
         } catch (error) {
