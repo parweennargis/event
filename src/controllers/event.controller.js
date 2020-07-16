@@ -60,6 +60,8 @@ module.exports = {
 
             // get data from logged in user and map it for event_organized_by;
             body.organized_by = req.user.userId;
+            // from admin panel if it does not have any value it doesnot send this field
+            if (!body.pricing) body.pricing = [];
 
             if (files && Object.keys(files).length) {
                 for (const key in files) {

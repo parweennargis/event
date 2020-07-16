@@ -34,6 +34,16 @@ class PricingRepository {
     async updateOne(condition, statement) {
         return Pricing.updateOne(condition, statement);
     }
+
+    /**
+     * Update records if find any
+     * @param {ObjectId} id 
+     * @param {Object} update 
+     * @param {Object} options 
+     */
+    async findByIdAndUpdate(id, update, options={ new: true }) {
+        return Pricing.findByIdAndUpdate(id, update, options);
+    }
 }
 
 module.exports = new PricingRepository();

@@ -13,5 +13,17 @@ module.exports = {
     },
     deletePricing: async (pricingId) => {
         await pricingRepository.updateOne({ _id: pricingId }, { is_active: false });
-    }
+    },
+    getPricingById: async (pricingId) => {
+        let pricing = await pricingRepository.findOne({ _id: pricingId })
+        if (!pricing) throw new CustomError(404, 'Pricing not found');
+
+        return pricing;
+    },
+    updatePricing: async (pricingId, data) => {
+        return pricingRepository.findByIdAndUpdate(pricingId, data);
+    },
+    getAllPricings: async () => {
+        return pricingRepository.find({});
+    },
 }

@@ -15,6 +15,7 @@ module.exports = {
                 main_description_5: { type: 'string', maxLength: 50 },
                 main_description_6: { type: 'string', maxLength: 50 },
                 main_description_7: { type: 'string', maxLength: 50 },
+                is_active: { type: 'string', enum: ['true', 'false'] },
             },
             required: ['name', 'amount', 'short_description', 'main_description_1']
         });
