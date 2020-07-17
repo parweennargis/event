@@ -9,7 +9,7 @@ package-lock.json
 .idea/vcs.xml
 .vscode/launch.json
 .env
-
+.idea
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

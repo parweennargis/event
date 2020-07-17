@@ -1,7 +1,6 @@
 const validateAccounts = require('../validateRequest/accounts');
 const accountService = require('../service/account.service');
 const awsS3Service = require('../service/aws/aws.s3.service');
-const awsSesService = require('../service/aws/aws.ses.service');
 
 const CustomError = require('../utils/error');
 
@@ -65,7 +64,8 @@ module.exports = {
         }
     },
     verifyUser: async (req, res) => {
-        return res.json({ data: req.user});
+        const { user: { email, role } } = req;
+        return res.json({ data: { email, role }});
     },
     sendMsg: async (req, res) => {
         // try {

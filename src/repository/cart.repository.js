@@ -22,8 +22,9 @@ class CartRepository {
      * Find Many Records
      * @param {Object} query
      * @param {String} select
+     * @param {Array} populate
      */
-    async find(query, {select = '', populate = []}) {
+    async find(query, select = '', populate = []) {
         return Cart.find(query, select).populate(populate);
     }
 
@@ -41,7 +42,10 @@ class CartRepository {
 
     async getCart(userId) {
         const aggregate = Cart.aggregate([
-            { $match: { user: mongoose.Types.ObjectId(userId) } },
+            { $match: {
+                user: mongoose.Types.ObjectId(userId),
+                order_status: 'CART'
+            } },
             { $lookup: { 
                 from: 'events',
                 localField: 'event',
@@ -67,6 +71,10 @@ class CartRepository {
         ]);
 
         return aggregate.exec();
+    }
+
+    async updateMany (filter = {}, doc = {}, options = {}) {
+        return Cart.updateMany(filter, doc, options);
     }
 }
 

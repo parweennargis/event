@@ -1,30 +1,21 @@
 const mongoose = require('mongoose');
 const cartRepository = require('../repository/cart.repository');
-const pricingRepository = require('../repository/pricing.repository');
 const eventRepository = require('../repository/event.repository');
-const eventModel = require('../models/event.model');
 const pricingModel = require('../models/pricing.model');
 
 const CustomError = require('../utils/error');
 
 module.exports = {
     getUserCart: async (userId) => {
-        const populate = [
-            { path: 'event', model: eventModel },
-            { path: 'pricing', model: pricingModel }
-        ];
-
-        // return cartRepository.find({ user: mongoose.Types.ObjectId(userId) }, { populate });
         return cartRepository.getCart(userId);
     },
     addItemInCart : async (data, userId) => {
-        // await cartRepository.deleteMany({ user: userId })
         const { quantity, eventId, pricingId } = data;
         const eventPopulate = [
             { path: 'pricing', model: pricingModel }
         ];
         const [ cart, event ] = await Promise.all([
-            cartRepository.findOne({ user: userId, event: eventId, pricing: pricingId }), 
+            cartRepository.findOne({ user: userId, event: eventId, pricing: pricingId, order_status: 'CART' }),
             eventRepository.findOne({ _id: eventId, is_active: true }, eventPopulate)
         ]);
         if (!event) {
