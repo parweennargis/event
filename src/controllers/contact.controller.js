@@ -18,6 +18,19 @@ module.exports = {
                     websiteUrl: `${config.websiteUrl}`
                 }
             });
+            awsSesService.sendMail('contact-us-admin.hbs', {
+                toAddresses: [process.env.ADMIN_EMAIL],
+                subject: 'Contact Us Query',
+                data: {
+                    name: result.name,
+                    email: result.email,
+                    phone_no: result.phone_no,
+                    subject: result.subject,
+                    message: result.message,
+                    websiteUrl: `${config.websiteUrl}`
+                }
+            });
+
             return res.json({ data: result });
         } catch (error) {
             return res.status(400).json({ errors: error.errors || error.message });
