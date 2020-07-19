@@ -6,6 +6,8 @@ const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const responseTime = require('response-time');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const { checkToken } = require('./src/utils/common');
 const storage = multer.diskStorage({
@@ -26,12 +28,13 @@ const router = express.Router();
 
 const routes = require('./src/routers')(app, router);
 
-// app.use(bodyParser.json());
+app.use(responseTime());
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb' }));
 app.use(checkToken);
-app.use(responseTime());
+app.use(compression());
+app.use(helmet());
 
 app.use('/', routes);
 
