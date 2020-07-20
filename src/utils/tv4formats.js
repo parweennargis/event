@@ -6,6 +6,13 @@ const mongoose = require('mongoose');
  * Extra formats for tv4 JSON schema validator.
  * @type {Object}
  */
+
+function validateEmail(email) {
+    // const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const re = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    return re.test(String(email).toLowerCase());
+}
 module.exports = {
     // mongodb id validator
     'objectId': function (data) {
@@ -14,7 +21,7 @@ module.exports = {
     // email validation
     'email': (data) => {
         if (!_.isEmpty(data)) {
-            return validator.isEmail(data) ? null : 'Please enter valid email address';
+            return validateEmail(data) ? null : 'Please enter valid email address';
         }  
         return null;
     },
