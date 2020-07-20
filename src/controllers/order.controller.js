@@ -1,9 +1,12 @@
 const orderService = require('../service/order.service');
-
+const validateOrder = require('../validateRequest/order');
 module.exports = {
     placeOrder: async (req, res) => {
         try {
             const { user, body } = req;
+            const { isSameAsBilling } = body;
+
+            if (!isSameAsBilling) validateOrder.order(body.billing);
             
             const order = await orderService.placeOrder(user, body);
 
