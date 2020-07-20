@@ -5,9 +5,9 @@ module.exports = {
         validate(body, {
             type: 'object',
             properties: {
-                name: { type: 'string' },
+                name: { type: 'string', format: 'strictAlphabet', maxLength: 50 },
                 email: { type: 'string', format: 'email', maxLength: 50 },
-                phone_no: { type: 'string' },
+                phone_no: { type: 'string', format: 'phone' },
                 subject: { type: 'string' },
                 message: { type: 'string' },
             },
