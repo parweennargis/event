@@ -30,8 +30,8 @@ class UserRepository {
      * Update One Record
      * @param {Object} query
      */
-    async updateOne(query) {
-        return UserModel.updateOne(query);
+    async updateOne(query, option) {
+        return UserModel.updateOne(query, option);
     }
 
     /**

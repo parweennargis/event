@@ -11,7 +11,7 @@ const eventRoute = (app, router) => {
         { name: 'past_event_banner_image', maxCount: 1 }
     ]);
 
-    router.post('/events', uploadFields , EventController.create);
+    router.post('/events', uploadFields, EventController.create);
 
     router.put('/events/:eventId', uploadFields, EventController.update);
 
@@ -30,6 +30,8 @@ const eventRoute = (app, router) => {
     router.get('/offline-events', EventController.getAllOfflineEvent);
 
     router.get('/previous-events', EventController.previousEvents);
+
+    router.post('/jobseeker-send-email', EventController.jobseekerSendEmail);
 
     return router;
 };

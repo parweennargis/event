@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const PricingModel = require('../models/pricing.model');
 const CustomError = require('../utils/error');
 const cloudFrontService = require('../service/aws/aws.cloudfront.service');
+const awsSesService = require('../service/aws/aws.ses.service');
 
+const userRepository = require('../repository/user.repository');
 const eventRepository = require('../repository/event.repository');
 const pricingRepository = require('../repository/pricing.repository');
 const eventCategoryRepository = require('../repository/eventCategory.repository');
@@ -159,4 +161,48 @@ module.exports = {
             throw new CustomError(400, error.message);
         }
     },
+    jobseekerSendEmail: async (userId, event_id) => {
+        // check user is job seeker
+        const user = await userRepository.findOne({ _id: userId });
+        if (!_.isEmpty(user)) {
+            if (user.role_type !== 'JOBSEEKER') {
+                // send error msg
+                throw new CustomError(400, 'User must be a job seeker');
+            }
+
+            // check user already interested or not
+            if (user.event_interested.includes(event_id)) {
+                // send error msg
+                throw new CustomError(400, 'You are already registered');
+            }
+
+            // send email to user
+            awsSesService.sendMail('jobseeker-confirmation.hbs', {
+                toAddresses: [user.email],
+                subject: 'Job Seeker Confirmation Email',
+                data: {
+                    name: `${user.first_name} ${user.last_name ? user.last_name : ''}`
+                }
+            });
+
+            // update the user object for the event
+            await userRepository.updateOne({ _id: userId }, { $addToSet: { event_interested: event_id } });
+
+        }
+
+        try {
+            const [count, items] = await Promise.all(promises);
+            for (const item of items) {
+                // const promises = item.images.map(image => cloudFrontService.getSignedUrl(image));
+                // item.images = await Promise.all(promises);
+                // if (item.banner) item.banner = await cloudFrontService.getSignedUrl(item.banner);
+                // if (item.floor_plan) item.floor_plan = await cloudFrontService.getSignedUrl(item.floor_plan);
+                if (item.past_event_banner_image) item.past_event_banner_image = await cloudFrontService.getSignedUrl(item.past_event_banner_image);
+            }
+            // const noOfPages = Math.ceil(count / limit);
+            return { count, items };
+        } catch (error) {
+            throw new CustomError(400, error.message);
+        }
+    }
 }

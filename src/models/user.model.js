@@ -76,6 +76,9 @@ const userSchema = new Schema({
     event_follows: {
         type: [Schema.Types.ObjectId]
     },
+    event_interested: {
+        type: [Schema.Types.ObjectId]
+    },
     license_type: Schema.Types.String,
     license_number: Schema.Types.String,
     license_date_of_expiry: Schema.Types.String,

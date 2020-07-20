@@ -173,4 +173,16 @@ module.exports = {
             return res.status(400).json({ errors: error.errors || error.message });
         }
     },
+    jobseekerSendEmail: async (req, res) => {
+        try {
+            // user Id
+            const userId = req.user.userId;
+            const { event_id } = req.body;
+            const events = await eventService.jobseekerSendEmail(userId, event_id);
+            return res.json({ data: events });
+        } catch (error) {
+            console.log(error);
+            return res.status(400).json({ errors: error.errors || error.message });
+        }
+    }
 };
