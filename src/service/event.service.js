@@ -72,7 +72,7 @@ module.exports = {
         let query = {};
         query.match = { is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId), start_date: { $gte: new Date() } };
         query.skip = (+page - 1) * +limit;
-        query.sort = { startDate: 'asc' };
+        query.sort = { start_date: 'asc' };
         query.limit = +limit;
         const promises = [
             eventRepository.count(query.match),
@@ -111,7 +111,7 @@ module.exports = {
         let query = {};
         query.match = { is_active: true, event_category: mongoose.Types.ObjectId(eventCategoryId), start_date: { $gte: new Date() }, event_type: 'VIRTUAL' };
         query.skip = (+page - 1) * +limit;
-        query.sort = { startDate: 'asc' };
+        query.sort = { start_date: 'asc' };
         query.limit = +limit;
         const promises = [
             eventRepository.count(query.match),
